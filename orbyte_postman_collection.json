@@ -1,0 +1,955 @@
+{
+  "info": {
+    "name": "OrByte API",
+    "description": "Colección completa de pruebas para la API REST de OrByte.\n\nPre-requisitos:\n1. Servidor Django corriendo: python manage.py runserver\n2. Datos cargados: python manage.py seed_db\n3. Ejecutar los 3 requests de Login — los tokens se guardan automáticamente.\n\nVariables de colección:\n- base_url → http://localhost:8000\n- token_admin / token_vendedor / token_cliente → se llenan al hacer login\n- pedido_id → ID de un pedido en estado Registrado (default 36, el último del seed)\n- importacion_id → ID de una importación para eliminar (actualizar tras importar)\n\nIDs del seed (BD limpia):\n  Usuarios: Carlos(admin)=1 | María(vend)=2 | Luis(vend)=3 | Juan(cli)=4 | Ana=5 | Pedro=6 | Sofía=7 | Andrés=8\n  Productos: MX Keys=1 | MX Master=2 | BlackWidow=3 | DeathAdder=4 | Kraken=5 | Alloy Origins=6 | Pulsefire=7 | Cloud Alpha=8\n  Estados: Registrado=1 | En preparación=2 | Enviado=3 | Completado=4 | Cancelado=5\n  Marcas: Logitech=1 | Razer=2 | HyperX=3\n  Categorías: Teclados=1 | Mouses=2 | Diademas=3",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url",       "value": "http://localhost:8000" },
+    { "key": "token_admin",    "value": "" },
+    { "key": "token_vendedor", "value": "" },
+    { "key": "token_cliente",  "value": "" },
+    { "key": "pedido_id",      "value": "36" },
+    { "key": "importacion_id", "value": "1" }
+  ],
+  "item": [
+
+    {
+      "name": "1. Autenticación",
+      "item": [
+        {
+          "name": "Login — Admin (Carlos Rodríguez)",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": ["var r = pm.response.json(); if (r.token) pm.collectionVariables.set('token_admin', r.token);"],
+              "type": "text/javascript"
+            }
+          }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@orbyte.com\",\n  \"password\": \"admin1234\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/login/", "host": ["{{base_url}}"], "path": ["api","login",""] },
+            "description": "Esperado 200. El token se guarda automáticamente en token_admin."
+          }
+        },
+        {
+          "name": "Login — Vendedor (María García)",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": ["var r = pm.response.json(); if (r.token) pm.collectionVariables.set('token_vendedor', r.token);"],
+              "type": "text/javascript"
+            }
+          }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"maria.g@orbyte.com\",\n  \"password\": \"trab1234\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/login/", "host": ["{{base_url}}"], "path": ["api","login",""] },
+            "description": "Esperado 200. Token guardado en token_vendedor.\nAlternativa: luis.f@orbyte.com / trab1234"
+          }
+        },
+        {
+          "name": "Login — Cliente (Juan Pérez)",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": ["var r = pm.response.json(); if (r.token) pm.collectionVariables.set('token_cliente', r.token);"],
+              "type": "text/javascript"
+            }
+          }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"juan@gmail.com\",\n  \"password\": \"cliente1234\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/login/", "host": ["{{base_url}}"], "path": ["api","login",""] },
+            "description": "Esperado 200. Token guardado en token_cliente.\nOtros clientes: ana@gmail.com | pedro@gmail.com | sofia@gmail.com | andres@gmail.com — todos usan contraseña cliente1234"
+          }
+        },
+        {
+          "name": "Login — ERROR credenciales inválidas → 400",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@orbyte.com\",\n  \"password\": \"contraseña_incorrecta\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/api/login/", "host": ["{{base_url}}"], "path": ["api","login",""] },
+            "description": "Esperado 400."
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+            "url": { "raw": "{{base_url}}/api/logout/", "host": ["{{base_url}}"], "path": ["api","logout",""] },
+            "description": "Invalida el token activo. Cambiar el header para cerrar sesión con otro rol.\nEsperado 200: { \"message\": \"Sesión cerrada.\" }"
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "2. Clientes",
+      "item": [
+        {
+          "name": "Buscar — por cédula (Juan Pérez 1050607080) ✅",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/clientes/buscar/?q=1050607080",
+              "host": ["{{base_url}}"], "path": ["api","clientes","buscar",""],
+              "query": [{ "key": "q", "value": "1050607080" }]
+            },
+            "description": "El parámetro q acepta cédula, email o teléfono.\nCédulas del seed:\n  Ana Martínez   → 1060708090\n  Pedro Soto     → 1070809100\n  Sofía Vargas   → 1080910110\n  Andrés Castro  → 1091011120\nPor email: q=juan@gmail.com\nPor teléfono: q=3101234567"
+          }
+        },
+        {
+          "name": "Buscar — por email ✅",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/clientes/buscar/?q=juan@gmail.com",
+              "host": ["{{base_url}}"], "path": ["api","clientes","buscar",""],
+              "query": [{ "key": "q", "value": "juan@gmail.com" }]
+            }
+          }
+        },
+        {
+          "name": "Buscar — por teléfono ✅",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/clientes/buscar/?q=3101234567",
+              "host": ["{{base_url}}"], "path": ["api","clientes","buscar",""],
+              "query": [{ "key": "q", "value": "3101234567" }]
+            }
+          }
+        },
+        {
+          "name": "Buscar — inexistente → 404",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/clientes/buscar/?q=9999999999",
+              "host": ["{{base_url}}"], "path": ["api","clientes","buscar",""],
+              "query": [{ "key": "q", "value": "9999999999" }]
+            }
+          }
+        },
+        {
+          "name": "Buscar — sin parámetro q → 400",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+            "url": { "raw": "{{base_url}}/api/clientes/buscar/", "host": ["{{base_url}}"], "path": ["api","clientes","buscar",""] }
+          }
+        },
+        {
+          "name": "Buscar — usuario no es cliente (cédula del admin) → 400",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/clientes/buscar/?q=1020304050",
+              "host": ["{{base_url}}"], "path": ["api","clientes","buscar",""],
+              "query": [{ "key": "q", "value": "1020304050" }]
+            },
+            "description": "El usuario existe pero su rol no es cliente → 400."
+          }
+        },
+        {
+          "name": "Buscar — con token vendedor ✅",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token_vendedor}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/clientes/buscar/?q=1050607080",
+              "host": ["{{base_url}}"], "path": ["api","clientes","buscar",""],
+              "query": [{ "key": "q", "value": "1050607080" }]
+            }
+          }
+        },
+        {
+          "name": "Buscar — con token cliente → 403",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token_cliente}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/clientes/buscar/?q=1050607080",
+              "host": ["{{base_url}}"], "path": ["api","clientes","buscar",""],
+              "query": [{ "key": "q", "value": "1050607080" }]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "3. Pedidos",
+      "item": [
+
+        {
+          "name": "3.1 Registrar",
+          "item": [
+            {
+              "name": "Registrar — MX Keys x1 + Pulsefire x2 (vendedor, cliente Juan)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Authorization", "value": "Token {{token_vendedor}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cliente_id\": 4,\n  \"productos\": [\n    { \"producto_id\": 1, \"cantidad\": 1 },\n    { \"producto_id\": 7, \"cantidad\": 2 }\n  ]\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{base_url}}/api/pedidos/registrar/", "host": ["{{base_url}}"], "path": ["api","pedidos","registrar",""] },
+                "description": "Esperado 201.\n  Producto 1: Logitech MX Keys      $320.000 × 1 = $320.000\n  Producto 7: HyperX Pulsefire Haste $180.000 × 2 = $360.000\n  Total esperado: $680.000\n\nGuardar el id retornado y actualizar la variable pedido_id para usar en editar."
+              }
+            },
+            {
+              "name": "Registrar — BlackWidow x1 + Kraken x1 + Cloud Alpha x2 (admin, cliente Ana)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Authorization", "value": "Token {{token_admin}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cliente_id\": 5,\n  \"productos\": [\n    { \"producto_id\": 3, \"cantidad\": 1 },\n    { \"producto_id\": 5, \"cantidad\": 1 },\n    { \"producto_id\": 8, \"cantidad\": 2 }\n  ]\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{base_url}}/api/pedidos/registrar/", "host": ["{{base_url}}"], "path": ["api","pedidos","registrar",""] },
+                "description": "Esperado 201.\n  Producto 3: Razer BlackWidow V4  $450.000 × 1 = $450.000\n  Producto 5: Razer Kraken V3      $350.000 × 1 = $350.000\n  Producto 8: HyperX Cloud Alpha   $310.000 × 2 = $620.000\n  Total esperado: $1.420.000"
+              }
+            },
+            {
+              "name": "Registrar — ERROR stock insuficiente → 400",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Authorization", "value": "Token {{token_admin}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cliente_id\": 4,\n  \"productos\": [\n    { \"producto_id\": 1, \"cantidad\": 999 }\n  ]\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{base_url}}/api/pedidos/registrar/", "host": ["{{base_url}}"], "path": ["api","pedidos","registrar",""] }
+              }
+            },
+            {
+              "name": "Registrar — ERROR cliente_id es admin → 400",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Authorization", "value": "Token {{token_admin}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cliente_id\": 1,\n  \"productos\": [\n    { \"producto_id\": 1, \"cantidad\": 1 }\n  ]\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{base_url}}/api/pedidos/registrar/", "host": ["{{base_url}}"], "path": ["api","pedidos","registrar",""] },
+                "description": "El id 1 es Carlos Rodríguez (admin), no un cliente."
+              }
+            },
+            {
+              "name": "Registrar — ERROR productos vacíos → 400",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Authorization", "value": "Token {{token_admin}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cliente_id\": 4,\n  \"productos\": []\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{base_url}}/api/pedidos/registrar/", "host": ["{{base_url}}"], "path": ["api","pedidos","registrar",""] }
+              }
+            },
+            {
+              "name": "Registrar — ERROR con token cliente → 403",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Authorization", "value": "Token {{token_cliente}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cliente_id\": 4,\n  \"productos\": [\n    { \"producto_id\": 1, \"cantidad\": 1 }\n  ]\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{base_url}}/api/pedidos/registrar/", "host": ["{{base_url}}"], "path": ["api","pedidos","registrar",""] }
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "3.2 Editar Estado",
+          "item": [
+            {
+              "name": "Editar — Registrado → En preparación (estado_id=2)",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  { "key": "Authorization", "value": "Token {{token_admin}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"estado_id\": 2,\n  \"motivo\": \"Pedido verificado y confirmado, se inicia la preparación.\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{base_url}}/api/pedidos/{{pedido_id}}/editar/", "host": ["{{base_url}}"], "path": ["api","pedidos","{{pedido_id}}","editar",""] },
+                "description": "Ejecutar en secuencia: este primero, luego Enviado, luego Completado.\nEl pedido_id=36 del seed está en estado Registrado."
+              }
+            },
+            {
+              "name": "Editar — En preparación → Enviado (estado_id=3)",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  { "key": "Authorization", "value": "Token {{token_admin}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"estado_id\": 3,\n  \"motivo\": \"Productos empacados y entregados al transportista.\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{base_url}}/api/pedidos/{{pedido_id}}/editar/", "host": ["{{base_url}}"], "path": ["api","pedidos","{{pedido_id}}","editar",""] }
+              }
+            },
+            {
+              "name": "Editar — Enviado → Completado (estado_id=4)",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  { "key": "Authorization", "value": "Token {{token_admin}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"estado_id\": 4,\n  \"motivo\": \"Cliente confirmó la recepción del pedido.\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{base_url}}/api/pedidos/{{pedido_id}}/editar/", "host": ["{{base_url}}"], "path": ["api","pedidos","{{pedido_id}}","editar",""] }
+              }
+            },
+            {
+              "name": "Editar — Registrado → Cancelado (estado_id=5)",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  { "key": "Authorization", "value": "Token {{token_admin}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"estado_id\": 5,\n  \"motivo\": \"Cliente solicitó cancelación antes del inicio de preparación.\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{base_url}}/api/pedidos/{{pedido_id}}/editar/", "host": ["{{base_url}}"], "path": ["api","pedidos","{{pedido_id}}","editar",""] },
+                "description": "Usar un pedido en estado Registrado. Al cancelar, el stock se devuelve automáticamente."
+              }
+            },
+            {
+              "name": "Editar — ERROR motivo muy corto → 400",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  { "key": "Authorization", "value": "Token {{token_admin}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"estado_id\": 2,\n  \"motivo\": \"Ok\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{base_url}}/api/pedidos/{{pedido_id}}/editar/", "host": ["{{base_url}}"], "path": ["api","pedidos","{{pedido_id}}","editar",""] },
+                "description": "El motivo requiere mínimo 5 caracteres."
+              }
+            },
+            {
+              "name": "Editar — ERROR transición inválida (Registrado → Completado) → 400",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  { "key": "Authorization", "value": "Token {{token_admin}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"estado_id\": 4,\n  \"motivo\": \"Intentando saltar directamente a Completado sin pasar por los estados intermedios.\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{base_url}}/api/pedidos/{{pedido_id}}/editar/", "host": ["{{base_url}}"], "path": ["api","pedidos","{{pedido_id}}","editar",""] }
+              }
+            },
+            {
+              "name": "Editar — ERROR estado terminal (Completado) → 400",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  { "key": "Authorization", "value": "Token {{token_admin}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"estado_id\": 1,\n  \"motivo\": \"Intentando reactivar un pedido ya completado.\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{base_url}}/api/pedidos/1/editar/", "host": ["{{base_url}}"], "path": ["api","pedidos","1","editar",""] },
+                "description": "Pedido #1 ya está Completado — no permite ningún cambio de estado."
+              }
+            },
+            {
+              "name": "Editar — ERROR con token cliente → 403",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  { "key": "Authorization", "value": "Token {{token_cliente}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"estado_id\": 2,\n  \"motivo\": \"Intento no autorizado de cambiar estado desde cliente.\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{base_url}}/api/pedidos/{{pedido_id}}/editar/", "host": ["{{base_url}}"], "path": ["api","pedidos","{{pedido_id}}","editar",""] }
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "3.3 Informe",
+          "item": [
+            {
+              "name": "Informe — todos (admin, 36 pedidos del seed)",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+                "url": { "raw": "{{base_url}}/api/pedidos/informe/", "host": ["{{base_url}}"], "path": ["api","pedidos","informe",""] }
+              }
+            },
+            {
+              "name": "Informe — filtro estado Completado (estado_id=4)",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/pedidos/informe/?estado_id=4",
+                  "host": ["{{base_url}}"], "path": ["api","pedidos","informe",""],
+                  "query": [{ "key": "estado_id", "value": "4" }]
+                },
+                "description": "El seed tiene 29 pedidos Completados."
+              }
+            },
+            {
+              "name": "Informe — filtro por rango de fechas (Q1 2026)",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/pedidos/informe/?fecha_ini=2026-01-01&fecha_fin=2026-03-31",
+                  "host": ["{{base_url}}"], "path": ["api","pedidos","informe",""],
+                  "query": [
+                    { "key": "fecha_ini", "value": "2026-01-01" },
+                    { "key": "fecha_fin", "value": "2026-03-31" }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Informe — filtro por cliente Juan Pérez (cliente_id=4)",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/pedidos/informe/?cliente_id=4",
+                  "host": ["{{base_url}}"], "path": ["api","pedidos","informe",""],
+                  "query": [{ "key": "cliente_id", "value": "4" }]
+                }
+              }
+            },
+            {
+              "name": "Informe — filtro por vendedor María García (registrado_por_id=2)",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/pedidos/informe/?registrado_por_id=2",
+                  "host": ["{{base_url}}"], "path": ["api","pedidos","informe",""],
+                  "query": [{ "key": "registrado_por_id", "value": "2" }]
+                },
+                "description": "Luis Fernández tiene registrado_por_id=3."
+              }
+            },
+            {
+              "name": "Informe — filtros combinados (Completados en abril-mayo 2026)",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/pedidos/informe/?fecha_ini=2026-04-01&fecha_fin=2026-05-12&estado_id=4",
+                  "host": ["{{base_url}}"], "path": ["api","pedidos","informe",""],
+                  "query": [
+                    { "key": "fecha_ini",  "value": "2026-04-01" },
+                    { "key": "fecha_fin",  "value": "2026-05-12" },
+                    { "key": "estado_id",  "value": "4" }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Informe — como vendedor (solo sus pedidos, sin filtros de otros)",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_vendedor}}" }],
+                "url": { "raw": "{{base_url}}/api/pedidos/informe/", "host": ["{{base_url}}"], "path": ["api","pedidos","informe",""] },
+                "description": "María García solo ve los pedidos que ella registró."
+              }
+            },
+            {
+              "name": "Informe — como cliente (solo sus propios pedidos)",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_cliente}}" }],
+                "url": { "raw": "{{base_url}}/api/pedidos/informe/", "host": ["{{base_url}}"], "path": ["api","pedidos","informe",""] },
+                "description": "Juan Pérez ve únicamente sus pedidos. Los parámetros de filtro se ignoran."
+              }
+            },
+            {
+              "name": "Informe — ERROR fecha con formato incorrecto → 400",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/pedidos/informe/?fecha_ini=12-05-2026",
+                  "host": ["{{base_url}}"], "path": ["api","pedidos","informe",""],
+                  "query": [{ "key": "fecha_ini", "value": "12-05-2026" }]
+                },
+                "description": "Formato debe ser YYYY-MM-DD."
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "3.4 Estados",
+          "item": [
+            {
+              "name": "Listar estados (admin)",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+                "url": { "raw": "{{base_url}}/api/pedidos/estados/", "host": ["{{base_url}}"], "path": ["api","pedidos","estados",""] },
+                "description": "Devuelve los 5 estados con id y nombre."
+              }
+            },
+            {
+              "name": "Listar estados — con token cliente → 403",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_cliente}}" }],
+                "url": { "raw": "{{base_url}}/api/pedidos/estados/", "host": ["{{base_url}}"], "path": ["api","pedidos","estados",""] }
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "3.5 Historial",
+          "item": [
+            {
+              "name": "Historial pedido #1 (Completado, 3 cambios de estado)",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+                "url": { "raw": "{{base_url}}/api/pedidos/1/historial/", "host": ["{{base_url}}"], "path": ["api","pedidos","1","historial",""] },
+                "description": "Historial completo: creación + Registrado→En preparación→Enviado→Completado."
+              }
+            },
+            {
+              "name": "Historial pedido #36 (Registrado, sin cambios)",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+                "url": { "raw": "{{base_url}}/api/pedidos/36/historial/", "host": ["{{base_url}}"], "path": ["api","pedidos","36","historial",""] },
+                "description": "Solo tiene el evento de creación."
+              }
+            },
+            {
+              "name": "Historial — como cliente viendo pedido propio ✅",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_cliente}}" }],
+                "url": { "raw": "{{base_url}}/api/pedidos/1/historial/", "host": ["{{base_url}}"], "path": ["api","pedidos","1","historial",""] },
+                "description": "Verificar primero en el informe que el pedido #1 pertenece a Juan Pérez."
+              }
+            },
+            {
+              "name": "Historial — ERROR cliente viendo pedido ajeno → 403",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_cliente}}" }],
+                "url": { "raw": "{{base_url}}/api/pedidos/2/historial/", "host": ["{{base_url}}"], "path": ["api","pedidos","2","historial",""] },
+                "description": "El pedido #2 pertenece a Ana Martínez, no a Juan Pérez."
+              }
+            },
+            {
+              "name": "Historial — ERROR pedido inexistente → 404",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+                "url": { "raw": "{{base_url}}/api/pedidos/9999/historial/", "host": ["{{base_url}}"], "path": ["api","pedidos","9999","historial",""] }
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "4. Informes (Solo Admin)",
+      "item": [
+        {
+          "name": "Consolidado — todas las secciones",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+            "url": { "raw": "{{base_url}}/api/pedidos/consolidado/", "host": ["{{base_url}}"], "path": ["api","pedidos","consolidado",""] },
+            "description": "Devuelve: clientes, vendedores, productos y categorías agregados por pedidos Completados."
+          }
+        },
+        {
+          "name": "Consolidado — con token vendedor → 403",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token_vendedor}}" }],
+            "url": { "raw": "{{base_url}}/api/pedidos/consolidado/", "host": ["{{base_url}}"], "path": ["api","pedidos","consolidado",""] }
+          }
+        },
+        {
+          "name": "Gráfico — filtros disponibles (años, categorías, marcas)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+            "url": { "raw": "{{base_url}}/api/pedidos/grafico/filtros/", "host": ["{{base_url}}"], "path": ["api","pedidos","grafico","filtros",""] },
+            "description": "Usar los IDs retornados para los filtros de productos-mas-vendidos."
+          }
+        },
+        {
+          "name": "Productos más vendidos — sin filtros (top 10)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+            "url": { "raw": "{{base_url}}/api/pedidos/grafico/productos-mas-vendidos/", "host": ["{{base_url}}"], "path": ["api","pedidos","grafico","productos-mas-vendidos",""] }
+          }
+        },
+        {
+          "name": "Productos más vendidos — año 2026",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/grafico/productos-mas-vendidos/?anio=2026",
+              "host": ["{{base_url}}"], "path": ["api","pedidos","grafico","productos-mas-vendidos",""],
+              "query": [{ "key": "anio", "value": "2026" }]
+            }
+          }
+        },
+        {
+          "name": "Productos más vendidos — diciembre 2025",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/grafico/productos-mas-vendidos/?anio=2025&mes=12",
+              "host": ["{{base_url}}"], "path": ["api","pedidos","grafico","productos-mas-vendidos",""],
+              "query": [
+                { "key": "anio", "value": "2025" },
+                { "key": "mes",  "value": "12" }
+              ]
+            },
+            "description": "El seed tiene 7 pedidos completados en diciembre 2025."
+          }
+        },
+        {
+          "name": "Productos más vendidos — categoría Mouses (categoria_id=2)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/grafico/productos-mas-vendidos/?categoria_id=2",
+              "host": ["{{base_url}}"], "path": ["api","pedidos","grafico","productos-mas-vendidos",""],
+              "query": [{ "key": "categoria_id", "value": "2" }]
+            },
+            "description": "Productos de la categoría Mouses: MX Master 3, DeathAdder V3, Pulsefire Haste."
+          }
+        },
+        {
+          "name": "Productos más vendidos — Razer top 3 (marca_id=2, top=3)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/grafico/productos-mas-vendidos/?marca_id=2&top=3",
+              "host": ["{{base_url}}"], "path": ["api","pedidos","grafico","productos-mas-vendidos",""],
+              "query": [
+                { "key": "marca_id", "value": "2" },
+                { "key": "top",      "value": "3" }
+              ]
+            },
+            "description": "Top 3 productos de Razer (BlackWidow V4, DeathAdder V3, Kraken V3)."
+          }
+        },
+        {
+          "name": "Productos más vendidos — ERROR mes sin año → 400",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/grafico/productos-mas-vendidos/?mes=6",
+              "host": ["{{base_url}}"], "path": ["api","pedidos","grafico","productos-mas-vendidos",""],
+              "query": [{ "key": "mes", "value": "6" }]
+            }
+          }
+        },
+        {
+          "name": "Productos más vendidos — ERROR año inválido → 400",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/grafico/productos-mas-vendidos/?anio=1800",
+              "host": ["{{base_url}}"], "path": ["api","pedidos","grafico","productos-mas-vendidos",""],
+              "query": [{ "key": "anio", "value": "1800" }]
+            }
+          }
+        },
+        {
+          "name": "Productos más vendidos — ERROR top=0 → 400",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/pedidos/grafico/productos-mas-vendidos/?top=0",
+              "host": ["{{base_url}}"], "path": ["api","pedidos","grafico","productos-mas-vendidos",""],
+              "query": [{ "key": "top", "value": "0" }]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "5. Interoperabilidad",
+      "item": [
+
+        {
+          "name": "5.1 Exportar",
+          "item": [
+            {
+              "name": "Exportar — todos los pedidos",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+                "url": { "raw": "{{base_url}}/api/interop/exportar/", "host": ["{{base_url}}"], "path": ["api","interop","exportar",""] }
+              }
+            },
+            {
+              "name": "Exportar — solo Completados",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/interop/exportar/?estado=Completado",
+                  "host": ["{{base_url}}"], "path": ["api","interop","exportar",""],
+                  "query": [{ "key": "estado", "value": "Completado" }]
+                }
+              }
+            },
+            {
+              "name": "Exportar — filtro por fecha (abril-mayo 2026)",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/interop/exportar/?fecha_ini=2026-04-01&fecha_fin=2026-05-12",
+                  "host": ["{{base_url}}"], "path": ["api","interop","exportar",""],
+                  "query": [
+                    { "key": "fecha_ini", "value": "2026-04-01" },
+                    { "key": "fecha_fin", "value": "2026-05-12" }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Exportar — como vendedor ✅",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_vendedor}}" }],
+                "url": { "raw": "{{base_url}}/api/interop/exportar/", "host": ["{{base_url}}"], "path": ["api","interop","exportar",""] }
+              }
+            },
+            {
+              "name": "Exportar — como cliente → 403",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_cliente}}" }],
+                "url": { "raw": "{{base_url}}/api/interop/exportar/", "host": ["{{base_url}}"], "path": ["api","interop","exportar",""] }
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "5.2 Importar",
+          "item": [
+            {
+              "name": "Importar — Agro (8 pedidos, todos los estados, un vendedor ausente)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Authorization", "value": "Token {{token_admin}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sistema\": \"Agro\",\n  \"version\": \"1.0\",\n  \"exportado_en\": \"2026-05-12T10:00:00Z\",\n  \"pedidos\": [\n    {\n      \"id_externo\": \"A-001\",\n      \"cliente\": \"Cooperativa Los Andes\",\n      \"vendedor\": \"Juliana Moreno\",\n      \"estado\": \"Completado\",\n      \"total\": 850000,\n      \"fecha\": \"2026-04-15T08:00:00Z\",\n      \"productos\": [\n        { \"nombre\": \"Fertilizante NPK 10-30-10\", \"categoria\": \"Fertilizantes\", \"cantidad\": 5, \"precio_unitario\": 120000 },\n        { \"nombre\": \"Semillas de Maíz Híbrido\",  \"categoria\": \"Semillas\",      \"cantidad\": 10, \"precio_unitario\": 25000 },\n        { \"nombre\": \"Herbicida Glifosato 1L\",    \"categoria\": \"Agroquímicos\",  \"cantidad\": 4,  \"precio_unitario\": 35000 }\n      ]\n    },\n    {\n      \"id_externo\": \"A-002\",\n      \"cliente\": \"Finca El Porvenir\",\n      \"vendedor\": \"Ricardo Salinas\",\n      \"estado\": \"Completado\",\n      \"total\": 430000,\n      \"fecha\": \"2026-04-18T09:30:00Z\",\n      \"productos\": [\n        { \"nombre\": \"Manguera de Riego 50m\", \"categoria\": \"Riego\", \"cantidad\": 2, \"precio_unitario\": 95000 },\n        { \"nombre\": \"Aspersor de Impacto\",   \"categoria\": \"Riego\", \"cantidad\": 4, \"precio_unitario\": 60000 }\n      ]\n    },\n    {\n      \"id_externo\": \"A-003\",\n      \"cliente\": \"Hacienda Santa Rosa\",\n      \"vendedor\": \"Juliana Moreno\",\n      \"estado\": \"Cancelado\",\n      \"total\": 275000,\n      \"fecha\": \"2026-04-22T11:15:00Z\",\n      \"productos\": [\n        { \"nombre\": \"Insecticida Cipermetrina 500ml\", \"categoria\": \"Agroquímicos\", \"cantidad\": 5, \"precio_unitario\": 55000 }\n      ]\n    },\n    {\n      \"id_externo\": \"A-004\",\n      \"cliente\": \"Agrícola del Norte S.A.S\",\n      \"vendedor\": \"Carlos Peña\",\n      \"estado\": \"Completado\",\n      \"total\": 1240000,\n      \"fecha\": \"2026-04-25T07:45:00Z\",\n      \"productos\": [\n        { \"nombre\": \"Abono Orgánico 50kg\",    \"categoria\": \"Fertilizantes\",      \"cantidad\": 8,  \"precio_unitario\": 85000 },\n        { \"nombre\": \"Semillas de Papa Pastusa\",\"categoria\": \"Semillas\",           \"cantidad\": 20, \"precio_unitario\": 18000 },\n        { \"nombre\": \"Fungicida Mancozeb 1kg\", \"categoria\": \"Agroquímicos\",       \"cantidad\": 6,  \"precio_unitario\": 42000 },\n        { \"nombre\": \"Guantes de Trabajo\",     \"categoria\": \"Equipos de Protección\",\"cantidad\": 10, \"precio_unitario\": 12000 }\n      ]\n    },\n    {\n      \"id_externo\": \"A-005\",\n      \"cliente\": \"Finca El Porvenir\",\n      \"vendedor\": \"Ricardo Salinas\",\n      \"estado\": \"Enviado\",\n      \"total\": 390000,\n      \"fecha\": \"2026-05-02T10:00:00Z\",\n      \"productos\": [\n        { \"nombre\": \"Bomba de Fumigación 20L\",  \"categoria\": \"Equipos\", \"cantidad\": 1, \"precio_unitario\": 320000 },\n        { \"nombre\": \"Boquillas de Repuesto x5\", \"categoria\": \"Equipos\", \"cantidad\": 2, \"precio_unitario\": 35000 }\n      ]\n    },\n    {\n      \"id_externo\": \"A-006\",\n      \"cliente\": \"Granja Integral El Refugio\",\n      \"estado\": \"Completado\",\n      \"total\": 560000,\n      \"fecha\": \"2026-05-05T13:20:00Z\",\n      \"productos\": [\n        { \"nombre\": \"Cal Agrícola 50kg\",   \"categoria\": \"Fertilizantes\", \"cantidad\": 4,  \"precio_unitario\": 45000 },\n        { \"nombre\": \"Semillas de Frijol ICA\",\"categoria\": \"Semillas\",    \"cantidad\": 15, \"precio_unitario\": 16000 },\n        { \"nombre\": \"Rastrillo Agrícola\",  \"categoria\": \"Herramientas\",  \"cantidad\": 3,  \"precio_unitario\": 55000 }\n      ]\n    },\n    {\n      \"id_externo\": \"A-007\",\n      \"cliente\": \"Cooperativa Los Andes\",\n      \"vendedor\": \"Carlos Peña\",\n      \"estado\": \"En preparación\",\n      \"total\": 720000,\n      \"fecha\": \"2026-05-09T08:50:00Z\",\n      \"productos\": [\n        { \"nombre\": \"Fertilizante Urea 50kg\",       \"categoria\": \"Fertilizantes\", \"cantidad\": 6,  \"precio_unitario\": 78000 },\n        { \"nombre\": \"Semillas de Tomate Chonto\",    \"categoria\": \"Semillas\",      \"cantidad\": 12, \"precio_unitario\": 22000 },\n        { \"nombre\": \"Cinta de Riego por Goteo 100m\",\"categoria\": \"Riego\",         \"cantidad\": 2,  \"precio_unitario\": 65000 }\n      ]\n    },\n    {\n      \"id_externo\": \"A-008\",\n      \"cliente\": \"Hacienda Santa Rosa\",\n      \"vendedor\": \"Juliana Moreno\",\n      \"estado\": \"Registrado\",\n      \"total\": 195000,\n      \"fecha\": \"2026-05-11T15:30:00Z\",\n      \"productos\": [\n        { \"nombre\": \"Azadón Reforzado\", \"categoria\": \"Herramientas\", \"cantidad\": 3, \"precio_unitario\": 45000 },\n        { \"nombre\": \"Pala Jardinera\",   \"categoria\": \"Herramientas\", \"cantidad\": 2, \"precio_unitario\": 30000 }\n      ]\n    }\n  ]\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{base_url}}/api/interop/importar/", "host": ["{{base_url}}"], "path": ["api","interop","importar",""] },
+                "description": "8 pedidos agrícolas. A-006 no tiene vendedor (campo opcional). Todos los estados representados.\nEsperado 201. Guardar el id de la respuesta en importacion_id."
+              }
+            },
+            {
+              "name": "Importar — mínimo válido (solo sistema obligatorio)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Authorization", "value": "Token {{token_admin}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sistema\": \"SistemaExterno\",\n  \"pedidos\": [\n    {}\n  ]\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{base_url}}/api/interop/importar/", "host": ["{{base_url}}"], "path": ["api","interop","importar",""] },
+                "description": "El pedido vacío usa defaults para todos los campos. Esperado 201."
+              }
+            },
+            {
+              "name": "Importar — ERROR sin campo sistema → 400",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Authorization", "value": "Token {{token_admin}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"version\": \"1.0\",\n  \"pedidos\": [\n    { \"cliente\": \"Test\", \"total\": 100000 }\n  ]\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{base_url}}/api/interop/importar/", "host": ["{{base_url}}"], "path": ["api","interop","importar",""] }
+              }
+            },
+            {
+              "name": "Importar — ERROR con token vendedor → 403",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Authorization", "value": "Token {{token_vendedor}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sistema\": \"Agro\",\n  \"pedidos\": []\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{base_url}}/api/interop/importar/", "host": ["{{base_url}}"], "path": ["api","interop","importar",""] }
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "5.3 Gestionar importaciones",
+          "item": [
+            {
+              "name": "Listar importaciones guardadas",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+                "url": { "raw": "{{base_url}}/api/interop/externos/", "host": ["{{base_url}}"], "path": ["api","interop","externos",""] },
+                "description": "Cada entrada incluye el JSON completo de pedidos importados."
+              }
+            },
+            {
+              "name": "Eliminar importación (importacion_id)",
+              "request": {
+                "method": "DELETE",
+                "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+                "url": { "raw": "{{base_url}}/api/interop/externos/{{importacion_id}}/", "host": ["{{base_url}}"], "path": ["api","interop","externos","{{importacion_id}}",""] },
+                "description": "Esperado 204 sin body. Actualizar importacion_id con el id obtenido al listar."
+              }
+            },
+            {
+              "name": "Eliminar importación — inexistente → 404",
+              "request": {
+                "method": "DELETE",
+                "header": [{ "key": "Authorization", "value": "Token {{token_admin}}" }],
+                "url": { "raw": "{{base_url}}/api/interop/externos/9999/", "host": ["{{base_url}}"], "path": ["api","interop","externos","9999",""] }
+              }
+            },
+            {
+              "name": "Listar importaciones — con token vendedor → 403",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Token {{token_vendedor}}" }],
+                "url": { "raw": "{{base_url}}/api/interop/externos/", "host": ["{{base_url}}"], "path": ["api","interop","externos",""] }
+              }
+            }
+          ]
+        }
+
+      ]
+    }
+
+  ]
+}

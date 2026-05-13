@@ -1,0 +1,121 @@
+.modal-editar-box {
+  background: #ffffff;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+
+.modal-editar-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-editar-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modal-editar-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.modal-editar-select {
+  padding: 9px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #111827;
+  background: #f9fafb;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.modal-editar-select:focus {
+  border-color: #3b82f6;
+  background: #fff;
+}
+
+.modal-editar-textarea {
+  padding: 9px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #111827;
+  background: #f9fafb;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+
+.modal-editar-textarea:focus {
+  border-color: #3b82f6;
+  background: #fff;
+}
+
+.modal-editar-final {
+  font-size: 13px;
+  color: #6b7280;
+  background: #f9fafb;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 0;
+}
+
+.modal-editar-error {
+  font-size: 13px;
+  color: #dc2626;
+  margin: 0;
+}
+
+.modal-editar-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 20px 20px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.btn-cancelar {
+  padding: 8px 18px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-cancelar:hover {
+  background: #e5e7eb;
+}
+
+.btn-guardar {
+  padding: 8px 18px;
+  background: #111827;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-guardar:hover:not(:disabled) {
+  background: #1f2937;
+}
+
+.btn-guardar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

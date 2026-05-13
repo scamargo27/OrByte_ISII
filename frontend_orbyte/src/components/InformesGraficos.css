@@ -1,0 +1,216 @@
+.ig-root {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ig-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+
+.ig-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 24px 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.ig-ingresos-badge {
+  margin-left: auto;
+  font-size: 13px;
+  font-weight: 500;
+  color: #15803d;
+  background: #dcfce7;
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+
+/* Filters */
+.ig-filters {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  padding: 18px 24px 8px;
+}
+
+.ig-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ig-filter-field label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.ig-filter-field select {
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #111827;
+  background: #f9fafb;
+  outline: none;
+  transition: border-color 0.15s;
+  cursor: pointer;
+}
+
+.ig-filter-field select:focus {
+  border-color: #3b82f6;
+  background: #fff;
+}
+
+.ig-filter-field select:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Período activo */
+.ig-periodo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px 16px;
+  font-size: 13px;
+}
+
+.ig-periodo-label {
+  color: #6b7280;
+}
+
+.ig-periodo-badge {
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+
+.ig-periodo-count {
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+/* Chart */
+.ig-chart-wrap {
+  padding: 16px 8px 8px;
+}
+
+/* Estados vacíos */
+.ig-estado {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+  padding: 40px 24px;
+  margin: 0;
+}
+
+.ig-error {
+  color: #dc2626;
+}
+
+/* Tooltip */
+.ig-tooltip {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 10px 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  min-width: 180px;
+}
+
+.ig-tooltip-nombre {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 2px;
+}
+
+.ig-tooltip-cat {
+  font-size: 11px;
+  color: #9ca3af;
+  margin: 0 0 8px;
+}
+
+.ig-tooltip-stat {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 12px;
+  color: #374151;
+  margin: 0 0 3px;
+}
+
+.ig-tooltip-stat strong {
+  color: #111827;
+}
+
+/* Tabla detalle */
+.ig-table-wrap {
+  overflow-x: auto;
+}
+
+.ig-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ig-table thead tr {
+  background: #f9fafb;
+}
+
+.ig-table th {
+  padding: 10px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.ig-table td {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #374151;
+  border-top: 1px solid #f3f4f6;
+}
+
+.ig-table tbody tr:hover {
+  background: #fafafa;
+}
+
+.ig-td-rank {
+  font-weight: 700;
+  color: #9ca3af;
+  width: 32px;
+}
+
+.ig-td-nombre {
+  font-weight: 500;
+  color: #111827;
+}
+
+.ig-td-num {
+  font-weight: 600;
+  color: #111827;
+  text-align: right;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ig-filters {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

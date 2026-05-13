@@ -1,0 +1,106 @@
+{
+  "sistema": "Agro",
+  "version": "1.0",
+  "exportado_en": "2026-05-12T10:00:00Z",
+  "pedidos": [
+    {
+      "id_externo": "A-001",
+      "cliente": "Cooperativa Los Andes",
+      "vendedor": "Juliana Moreno",
+      "estado": "Completado",
+      "total": 850000,
+      "fecha": "2026-04-15T08:00:00Z",
+      "productos": [
+        { "nombre": "Fertilizante NPK 10-30-10", "categoria": "Fertilizantes", "cantidad": 5, "precio_unitario": 120000 },
+        { "nombre": "Semillas de Maíz Híbrido", "categoria": "Semillas", "cantidad": 10, "precio_unitario": 25000 },
+        { "nombre": "Herbicida Glifosato 1L", "categoria": "Agroquímicos", "cantidad": 4, "precio_unitario": 35000 }
+      ]
+    },
+    {
+      "id_externo": "A-002",
+      "cliente": "Finca El Porvenir",
+      "vendedor": "Ricardo Salinas",
+      "estado": "Completado",
+      "total": 430000,
+      "fecha": "2026-04-18T09:30:00Z",
+      "productos": [
+        { "nombre": "Manguera de Riego 50m", "categoria": "Riego", "cantidad": 2, "precio_unitario": 95000 },
+        { "nombre": "Aspersor de Impacto", "categoria": "Riego", "cantidad": 4, "precio_unitario": 60000 }
+      ]
+    },
+    {
+      "id_externo": "A-003",
+      "cliente": "Hacienda Santa Rosa",
+      "vendedor": "Juliana Moreno",
+      "estado": "Cancelado",
+      "total": 275000,
+      "fecha": "2026-04-22T11:15:00Z",
+      "productos": [
+        { "nombre": "Insecticida Cipermetrina 500ml", "categoria": "Agroquímicos", "cantidad": 5, "precio_unitario": 55000 }
+      ]
+    },
+    {
+      "id_externo": "A-004",
+      "cliente": "Agrícola del Norte S.A.S",
+      "vendedor": "Carlos Peña",
+      "estado": "Completado",
+      "total": 1240000,
+      "fecha": "2026-04-25T07:45:00Z",
+      "productos": [
+        { "nombre": "Abono Orgánico 50kg", "categoria": "Fertilizantes", "cantidad": 8, "precio_unitario": 85000 },
+        { "nombre": "Semillas de Papa Pastusa", "categoria": "Semillas", "cantidad": 20, "precio_unitario": 18000 },
+        { "nombre": "Fungicida Mancozeb 1kg", "categoria": "Agroquímicos", "cantidad": 6, "precio_unitario": 42000 },
+        { "nombre": "Guantes de Trabajo", "categoria": "Equipos de Protección", "cantidad": 10, "precio_unitario": 12000 }
+      ]
+    },
+    {
+      "id_externo": "A-005",
+      "cliente": "Finca El Porvenir",
+      "vendedor": "Ricardo Salinas",
+      "estado": "Enviado",
+      "total": 390000,
+      "fecha": "2026-05-02T10:00:00Z",
+      "productos": [
+        { "nombre": "Bomba de Fumigación 20L", "categoria": "Equipos", "cantidad": 1, "precio_unitario": 320000 },
+        { "nombre": "Boquillas de Repuesto x5", "categoria": "Equipos", "cantidad": 2, "precio_unitario": 35000 }
+      ]
+    },
+    {
+      "id_externo": "A-006",
+      "cliente": "Granja Integral El Refugio",
+      "estado": "Completado",
+      "total": 560000,
+      "fecha": "2026-05-05T13:20:00Z",
+      "productos": [
+        { "nombre": "Cal Agrícola 50kg", "categoria": "Fertilizantes", "cantidad": 4, "precio_unitario": 45000 },
+        { "nombre": "Semillas de Frijol ICA", "categoria": "Semillas", "cantidad": 15, "precio_unitario": 16000 },
+        { "nombre": "Rastrillo Agrícola", "categoria": "Herramientas", "cantidad": 3, "precio_unitario": 55000 }
+      ]
+    },
+    {
+      "id_externo": "A-007",
+      "cliente": "Cooperativa Los Andes",
+      "vendedor": "Carlos Peña",
+      "estado": "En preparación",
+      "total": 720000,
+      "fecha": "2026-05-09T08:50:00Z",
+      "productos": [
+        { "nombre": "Fertilizante Urea 50kg", "categoria": "Fertilizantes", "cantidad": 6, "precio_unitario": 78000 },
+        { "nombre": "Semillas de Tomate Chonto", "categoria": "Semillas", "cantidad": 12, "precio_unitario": 22000 },
+        { "nombre": "Cinta de Riego por Goteo 100m", "categoria": "Riego", "cantidad": 2, "precio_unitario": 65000 }
+      ]
+    },
+    {
+      "id_externo": "A-008",
+      "cliente": "Hacienda Santa Rosa",
+      "vendedor": "Juliana Moreno",
+      "estado": "Registrado",
+      "total": 195000,
+      "fecha": "2026-05-11T15:30:00Z",
+      "productos": [
+        { "nombre": "Azadón Reforzado", "categoria": "Herramientas", "cantidad": 3, "precio_unitario": 45000 },
+        { "nombre": "Pala Jardinera", "categoria": "Herramientas", "cantidad": 2, "precio_unitario": 30000 }
+      ]
+    }
+  ]
+}
