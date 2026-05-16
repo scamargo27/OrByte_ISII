@@ -350,3 +350,66 @@ Respuesta:
 ```
 
 Cada pedido incluye el campo `sistema: "OrByte"` para que el frontend pueda identificar el origen al mostrar la tabla consolidada.
+
+---
+
+## Despliegue en producción
+
+Stack utilizado: **Neon** (PostgreSQL) · **Render** (Django) · **Vercel** (React)
+
+### 1. Base de datos — Neon
+
+1. Crear cuenta en [neon.tech](https://neon.tech) y crear un nuevo proyecto.
+2. Copiar la **connection string** del dashboard (formato `postgresql://user:password@host.neon.tech/dbname?sslmode=require`).
+
+---
+
+### 2. Backend — Render
+
+1. En [render.com](https://render.com) crear un nuevo **Web Service**.
+2. Conectar el repositorio y configurar:
+   - **Root Directory**: `backend_orbyte`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `gunicorn backend.wsgi:application`
+
+3. En **Environment Variables** del servicio agregar:
+
+| Variable | Valor |
+|---|---|
+| `DEBUG` | `False` |
+| `SECRET_KEY` | Clave segura generada (ej. con `python -c "import secrets; print(secrets.token_urlsafe(50))"`) |
+| `ALLOWED_HOSTS` | `tu-app.onrender.com` |
+| `DATABASE_URL` | Connection string de Neon |
+| `CORS_ALLOWED_ORIGINS` | `https://tu-app.vercel.app` |
+| `CSRF_TRUSTED_ORIGINS` | `https://tu-app.vercel.app` |
+
+4. Tras el primer deploy, abrir la **Shell** de Render y ejecutar:
+
+```bash
+python manage.py migrate
+python manage.py seed_db
+```
+
+---
+
+### 3. Frontend — Vercel
+
+1. En [vercel.com](https://vercel.com) importar el repositorio.
+2. Configurar:
+   - **Root Directory**: `frontend_orbyte`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+
+3. En **Environment Variables** agregar:
+
+| Variable | Valor |
+|---|---|
+| `VITE_API_URL` | `https://tu-app.onrender.com` |
+
+4. Hacer deploy. Vercel detecta automáticamente el `vercel.json` incluido en el proyecto.
+
+---
+
+### Variables de entorno — resumen
+
+Consultar `.env.example` en `backend_orbyte/` y `frontend_orbyte/` para ver todas las variables con sus descripciones.
