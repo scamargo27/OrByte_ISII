@@ -226,8 +226,8 @@ export default function InformesGraficos() {
                   <th>Producto</th>
                   <th>Categoría</th>
                   <th>Marca</th>
-                  <th>Unidades</th>
-                  <th>Ingresos</th>
+                  <th className="ig-th-center">Unidades</th>
+                  <th className="ig-th-center">Ingresos</th>
                 </tr>
               </thead>
               <tbody>

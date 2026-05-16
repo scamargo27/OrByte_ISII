@@ -41,9 +41,10 @@ export default function Dashboard({ usuario, onLogout }) {
   const [loading, setLoading]           = useState(true)
   const [activeTab, setActiveTab]       = useState('pedidos')
   const [buscar, setBuscar]             = useState('')
-  const [estadoFiltro, setEstadoFiltro] = useState('')
-  const [fechaIni, setFechaIni]         = useState('')
-  const [fechaFin, setFechaFin]         = useState('')
+  const [estadoFiltro, setEstadoFiltro]       = useState('')
+  const [vendedorFiltro, setVendedorFiltro]   = useState('')
+  const [fechaIni, setFechaIni]               = useState('')
+  const [fechaFin, setFechaFin]               = useState('')
   const [pagina, setPagina]             = useState(1)
   const [pedidoDetalle, setPedidoDetalle]     = useState(null)
   const [pedidoEditar, setPedidoEditar]       = useState(null)
@@ -77,7 +78,15 @@ export default function Dashboard({ usuario, onLogout }) {
     cargar()
   }, [usuario.id])
 
-  useEffect(() => { setPagina(1) }, [buscar, estadoFiltro, fechaIni, fechaFin])
+  useEffect(() => { setPagina(1) }, [buscar, estadoFiltro, vendedorFiltro, fechaIni, fechaFin])
+
+  const vendedoresUnicos = useMemo(() => {
+    const vistos = new Set()
+    return pedidos
+      .map(p => p.registrado_por)
+      .filter(v => { if (vistos.has(v)) return false; vistos.add(v); return true })
+      .sort()
+  }, [pedidos])
 
   const pedidosFiltrados = useMemo(() => {
     return pedidos.filter(p => {
@@ -90,6 +99,7 @@ export default function Dashboard({ usuario, onLogout }) {
         if (!matchId && !matchCliente && !matchCedula && !matchProd) return false
       }
       if (estadoFiltro && p.estado !== estadoFiltro) return false
+      if (vendedorFiltro && p.registrado_por !== vendedorFiltro) return false
       if (fechaIni) {
         const fecha = new Date(p.creado_en).toISOString().slice(0, 10)
         if (fecha < fechaIni) return false
@@ -153,10 +163,17 @@ export default function Dashboard({ usuario, onLogout }) {
       />
 
       <main className="dashboard-main">
-        <div className="dashboard-heading">
-          <h1>{esCliente ? 'Mis Pedidos' : 'Panel de Ventas'}</h1>
-          <p>Bienvenido, {usuario.nombre}</p>
-        </div>
+        {activeTab !== 'interop' && (
+          <div className="dashboard-heading">
+            <h1>
+              {activeTab === 'consolidado' ? 'Informe consolidado'
+               : activeTab === 'grafico'   ? 'Informes gráficos'
+               : esCliente                 ? 'Mis Pedidos'
+               :                            'Panel de pedidos'}
+            </h1>
+            <p>Bienvenido, {usuario.nombre}</p>
+          </div>
+        )}
 
         {activeTab === 'pedidos' && <div className="stats-grid">
           <div className="stat-card">
@@ -203,7 +220,7 @@ export default function Dashboard({ usuario, onLogout }) {
               )}
             </div>
 
-            <div className="filters-grid">
+            <div className={esAdmin ? 'filters-grid' : 'filters-grid-compact'}>
               <div className="filter-field">
                 <label>Buscar</label>
                 <input
@@ -214,6 +231,14 @@ export default function Dashboard({ usuario, onLogout }) {
                 />
               </div>
               <div className="filter-field">
+                <label>Desde</label>
+                <input type="date" value={fechaIni} onChange={e => setFechaIni(e.target.value)} />
+              </div>
+              <div className="filter-field">
+                <label>Hasta</label>
+                <input type="date" value={fechaFin} onChange={e => setFechaFin(e.target.value)} />
+              </div>
+              <div className="filter-field">
                 <label>Estado</label>
                 <select value={estadoFiltro} onChange={e => setEstadoFiltro(e.target.value)}>
                   <option value="">Todos</option>
@@ -222,14 +247,17 @@ export default function Dashboard({ usuario, onLogout }) {
                   ))}
                 </select>
               </div>
-              <div className="filter-field">
-                <label>Desde</label>
-                <input type="date" value={fechaIni} onChange={e => setFechaIni(e.target.value)} />
-              </div>
-              <div className="filter-field">
-                <label>Hasta</label>
-                <input type="date" value={fechaFin} onChange={e => setFechaFin(e.target.value)} />
-              </div>
+              {esAdmin && (
+                <div className="filter-field">
+                  <label>Vendedor</label>
+                  <select value={vendedorFiltro} onChange={e => setVendedorFiltro(e.target.value)}>
+                    <option value="">Todos</option>
+                    {vendedoresUnicos.map(v => (
+                      <option key={v} value={v}>{v}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
 
             {loading ? (
@@ -241,7 +269,7 @@ export default function Dashboard({ usuario, onLogout }) {
                     <thead>
                       <tr>
                         <th>ID</th>
-                        <th>Cliente</th>
+                        {esCliente ? <th>Vendedor</th> : <th>Cliente</th>}
                         {esAdmin && <th>Vendedor</th>}
                         <th>Productos</th>
                         <th>Total</th>
@@ -258,12 +286,15 @@ export default function Dashboard({ usuario, onLogout }) {
                       ) : pedidosPagina.map(p => (
                         <tr key={p.id}>
                           <td className="td-id">#{p.id}</td>
-                          <td className="td-cliente">
-                            {p.cliente_nombre}
-                            {p.cliente_cedula && (
-                              <span className="td-sub">C.C {p.cliente_cedula}</span>
-                            )}
-                          </td>
+                          {esCliente
+                            ? <td className="td-vendedor">{p.registrado_por}</td>
+                            : <td className="td-cliente">
+                                {p.cliente_nombre}
+                                {p.cliente_cedula && (
+                                  <span className="td-sub">C.C {p.cliente_cedula}</span>
+                                )}
+                              </td>
+                          }
                           {esAdmin && <td className="td-vendedor">{p.registrado_por}</td>}
                           <td className="td-productos">
                             <span className="prod-count">{p.productos.reduce((s, pr) => s + pr.cantidad, 0)} unidades</span>

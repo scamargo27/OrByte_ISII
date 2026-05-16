@@ -99,10 +99,11 @@ class RegistrarPedidoSerializer(serializers.Serializer):
 class PedidoProductoOutputSerializer(serializers.ModelSerializer):
     producto_nombre  = serializers.CharField(source='producto.nombre')
     producto_id      = serializers.IntegerField(source='producto.id')
+    producto_imagen  = serializers.URLField(source='producto.imagen_url', allow_null=True)
 
     class Meta:
         model  = PedidoProducto
-        fields = ['producto_id', 'producto_nombre', 'cantidad', 'precio_unitario_snapshot']
+        fields = ['producto_id', 'producto_nombre', 'producto_imagen', 'cantidad', 'precio_unitario_snapshot']
 
 
 class PedidoOutputSerializer(serializers.ModelSerializer):

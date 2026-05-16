@@ -21,6 +21,8 @@ export default function ModalRegistrarPedido({ onClose, onCreado }) {
 
   const [items, setItems]                 = useState([])
 
+  const [preview, setPreview]             = useState(null)
+
   const [enviando, setEnviando]           = useState(false)
   const [submitError, setSubmitError]     = useState('')
 
@@ -73,6 +75,7 @@ export default function ModalRegistrarPedido({ onClose, onCreado }) {
 
   function agregarProducto(prod) {
     setItems(prev => [...prev, { ...prod, cantidad: 1 }])
+    setPreview(prod)
     setBusqueda('')
     setShowDropdown(false)
   }
@@ -127,6 +130,20 @@ export default function ModalRegistrarPedido({ onClose, onCreado }) {
           </div>
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
+
+        <div className={`modal-registrar-layout${preview ? ' with-preview' : ''}`}>
+
+        {preview && (
+          <div className="mr-preview-panel">
+            {preview.imagen_url ? (
+              <img src={preview.imagen_url} alt={preview.nombre} className="mr-preview-img" />
+            ) : (
+              <div className="mr-preview-placeholder">Sin imagen</div>
+            )}
+            <span className="mr-preview-nombre">{preview.nombre}</span>
+            <span className="mr-preview-marca">{preview.marca}</span>
+          </div>
+        )}
 
         <div className="modal-registrar-body">
 
@@ -231,7 +248,7 @@ export default function ModalRegistrarPedido({ onClose, onCreado }) {
               <div className="mr-items-list">
                 {items.map(item => (
                   <div key={item.id} className="mr-item">
-                    <div className="mr-item-info">
+                    <div className="mr-item-info" onClick={() => setPreview(item)} title="Ver imagen">
                       <span className="mr-item-nombre">{item.nombre}</span>
                       <span className="mr-item-meta">{item.categoria} · {item.marca}</span>
                     </div>
@@ -259,6 +276,8 @@ export default function ModalRegistrarPedido({ onClose, onCreado }) {
           </div>
 
         </div>
+
+        </div>{/* modal-registrar-layout */}
 
         {submitError && <p className="mr-submit-error">{submitError}</p>}
 

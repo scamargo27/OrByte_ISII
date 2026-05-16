@@ -99,17 +99,17 @@ class Command(BaseCommand):
         # Stock alto para soportar el volumen de pedidos del seed.
         # update_or_create permite re-ejecutar el seed en una BD existente.
         productos_data = [
-            ('Logitech MX Keys',       'Teclado inalámbrico premium',          320000, 80, 'Teclados', 'Logitech'),
-            ('Logitech MX Master 3',   'Mouse ergonómico inalámbrico',         280000, 80, 'Mouses',   'Logitech'),
-            ('Razer BlackWidow V4',    'Teclado mecánico con switches Razer',  450000, 50, 'Teclados', 'Razer'),
-            ('Razer DeathAdder V3',    'Mouse gaming con sensor Focus Pro',    230000, 80, 'Mouses',   'Razer'),
-            ('Razer Kraken V3',        'Diadema gaming con THX Spatial',       350000, 60, 'Diademas', 'Razer'),
-            ('HyperX Alloy Origins',   'Teclado mecánico compacto TKL',        380000, 50, 'Teclados', 'HyperX'),
-            ('HyperX Pulsefire Haste', 'Mouse ultraligero para gaming',        180000, 80, 'Mouses',   'HyperX'),
-            ('HyperX Cloud Alpha',     'Diadema con drivers duales de cámara', 310000, 60, 'Diademas', 'HyperX'),
+            ('Logitech MX Keys',       'Teclado inalámbrico premium',          320000, 19, 'Teclados', 'Logitech', '/imagenes/logitech-mx-keys.png'),
+            ('Logitech MX Master 3',   'Mouse ergonómico inalámbrico',         280000, 22, 'Mouses',   'Logitech', '/imagenes/logitech-mx-master-3.png'),
+            ('Razer BlackWidow V4',    'Teclado mecánico con switches Razer',  450000, 15, 'Teclados', 'Razer',    '/imagenes/razer-blackwidow-v4.jpg'),
+            ('Razer DeathAdder V3',    'Mouse gaming con sensor Focus Pro',    230000, 26, 'Mouses',   'Razer',    '/imagenes/razer-deathadder-v3.jpg'),
+            ('Razer Kraken V3',        'Diadema gaming con THX Spatial',       350000, 14, 'Diademas', 'Razer',    '/imagenes/razer-kraken-v3.png'),
+            ('HyperX Alloy Origins',   'Teclado mecánico compacto TKL',        380000, 14, 'Teclados', 'HyperX',  '/imagenes/hyperx-alloy-origins.jpg'),
+            ('HyperX Pulsefire Haste', 'Mouse ultraligero para gaming',        180000, 26, 'Mouses',   'HyperX',  '/imagenes/hyperx-pulsefire-haste.jpg'),
+            ('HyperX Cloud Alpha',     'Diadema con drivers duales de cámara', 310000, 20, 'Diademas', 'HyperX',  '/imagenes/hyperx-cloud-alpha.jpg'),
         ]
         productos = {}
-        for nombre, desc, precio, stock, cat, marca in productos_data:
+        for nombre, desc, precio, stock, cat, marca, imagen in productos_data:
             obj, _ = Producto.objects.update_or_create(
                 nombre=nombre,
                 defaults={
@@ -119,6 +119,7 @@ class Command(BaseCommand):
                     'stock_reservado':  0,
                     'categoria':        cats[cat],
                     'marca':            marcas[marca],
+                    'imagen_url':       imagen,
                 }
             )
             productos[nombre] = obj

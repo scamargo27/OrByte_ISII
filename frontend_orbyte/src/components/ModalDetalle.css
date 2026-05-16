@@ -138,14 +138,24 @@
 
 .modal-producto-row {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+  gap: 12px;
   padding: 12px 14px;
   background: #f9fafb;
   border-radius: 8px;
 }
 
+.modal-producto-img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #fff;
+  flex-shrink: 0;
+}
+
 .modal-producto-info {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 4px;

@@ -31,6 +31,7 @@ class Producto(models.Model):
     stock_reservado  = models.PositiveIntegerField(default=0)
     categoria        = models.ForeignKey(Categoria, on_delete=models.PROTECT, db_column='categoria_id')
     marca            = models.ForeignKey(Marca, on_delete=models.PROTECT, db_column='marca_id')
+    imagen_url       = models.URLField(null=True, blank=True)
     activo           = models.BooleanField(default=True)
     creado_en        = models.DateTimeField(auto_now_add=True)
 

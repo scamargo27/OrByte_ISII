@@ -1,0 +1,128 @@
+ANÁLISIS DEL DIAGRAMA DE ACTIVIDADES - REGISTRO DE PEDIDOS - ORBYTE
+=====================================================================
+Fecha: 2026-05-16
+Comparación entre el diagrama y la implementación real del backend
+
+
+=== LO QUE EL DIAGRAMA REPRESENTA CORRECTAMENTE ===
+
+1. Consulta de inventario al iniciar
+   - Existe GET /api/productos/ para listar productos disponibles al cargar el formulario.
+
+2. Validación de stock insuficiente
+   - Implementada en pedidos/serializers.py (método validate, líneas 40-49).
+   - Si stock_disponible < cantidad solicitada, se retorna un error de validación.
+
+3. Registro del pedido en base de datos
+   - Los modelos Pedido y PedidoProducto en pedidos/models.py lo confirman.
+
+4. Confirmación de registro retornada al frontend
+   - El endpoint POST /api/pedidos/registrar/ retorna HTTP 201 CREATED con
+     los detalles completos del pedido creado.
+
+5. Solo trabajadores y administradores pueden registrar pedidos
+   - Controlado por el permiso EsAdminOTrabajador en el endpoint.
+
+
+=== DISCREPANCIAS CON LA IMPLEMENTACIÓN REAL ===
+
+1. "Consultar disponibilidad del producto" está mal ubicado (carril Frontend)
+   -------------------------------------------------------------------
+   El diagrama muestra esta acción dentro del carril Frontend, implicando
+   que el frontend hace una validación independiente de stock. En la
+   implementación real, la validación autoritativa ocurre en el BACKEND
+   durante el POST /api/pedidos/registrar/, no como una consulta separada.
+   El frontend puede hacer una verificación preliminar con los datos del
+   inventario ya cargados, pero no es la validación real del sistema.
+
+   CORRECCIÓN: Mover o duplicar este paso al carril Backend, indicando que
+   la validación definitiva de stock se hace en el servidor.
+
+2. Los productos se envían todos juntos en una sola solicitud (no uno a uno)
+   --------------------------------------------------------------------------
+   El diagrama sugiere un flujo iterativo donde cada producto se valida y
+   confirma individualmente ("Producto añadido con éxito") antes de enviar
+   el pedido. En realidad, el backend recibe TODOS los productos en un único
+   request como array:
+     { "cliente_id": 1, "productos": [{"producto_id": 5, "cantidad": 3}, ...] }
+   La lógica de "agregar otro producto" es puramente frontend (lista temporal
+   en memoria), y el backend no expone un endpoint para añadir productos uno
+   por uno. El diagrama debería aclarar que la solicitud final incluye todos
+   los productos acumulados.
+
+3. Falta validación de cliente_id en el Backend
+   -----------------------------------------------
+   El diagrama no muestra ninguna validación del cliente asociado al pedido.
+   En la implementación, el backend valida que:
+     - El cliente_id exista en el sistema.
+     - El usuario esté activo.
+     - El usuario tenga el rol "cliente" (no admin ni trabajador).
+   Si alguna de estas condiciones falla, el pedido es rechazado.
+
+   CORRECCIÓN: Agregar un paso "Validar cliente_id" en el carril Backend
+   antes de procesar los productos.
+
+4. Falta el campo "registrado_por" (quién registra el pedido)
+   ------------------------------------------------------------
+   El modelo Pedido incluye el campo registrado_por_id (FK al usuario
+   autenticado que crea el pedido, es decir el trabajador o admin).
+   Este dato se captura automáticamente del token de autenticación.
+   El diagrama no lo menciona en ninguna parte.
+
+5. La transacción atómica y el bloqueo de fila (select_for_update) no aparecen
+   ------------------------------------------------------------------------------
+   El backend implementa una doble validación de stock para evitar condiciones
+   de carrera en entornos concurrentes:
+     a) Validación inicial (optimista) en el método validate() del serializer.
+     b) Segunda validación dentro de @transaction.atomic usando
+        select_for_update() que bloquea la fila del producto durante la
+        escritura, garantizando consistencia si múltiples pedidos se procesan
+        al mismo tiempo.
+   El diagrama muestra "Generar pedido" como un paso simple, sin reflejar
+   esta lógica de integridad crítica.
+
+   CORRECCIÓN: Expandir el paso "Generar pedido" en el carril Backend para
+   mostrar: Validar cliente → Iniciar transacción atómica → Verificar stock
+   con bloqueo → Crear pedido → Actualizar stock.
+
+6. El stock no solo "baja": se mueve entre dos campos
+   ----------------------------------------------------
+   El diagrama implica que al registrar el pedido el stock simplemente
+   disminuye. En la implementación real, el producto tiene dos campos:
+     - stock_disponible: se reduce en la cantidad pedida.
+     - stock_reservado: se incrementa en la misma cantidad.
+   Esto permite rastrear cuánto stock está comprometido en pedidos activos
+   pero aún no entregado.
+
+   CORRECCIÓN: El paso "Registrar pedido" en Base de Datos debería indicar
+   también "Actualizar stock_disponible y stock_reservado".
+
+7. El pedido se crea con un estado inicial que no aparece en el diagrama
+   -----------------------------------------------------------------------
+   Al registrarse, el pedido queda asociado a un EstadoPedido (por ejemplo
+   "Registrado"). Este estado es una entidad separada en la base de datos.
+   El diagrama no refleja que el pedido tenga un ciclo de vida de estados.
+
+
+=== RESUMEN DE CORRECCIONES SUGERIDAS AL DIAGRAMA ===
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ Problema                          │ Acción en el diagrama                │
+├──────────────────────────────────────────────────────────────────────────┤
+│ Validación de stock en Frontend   │ Moverla/duplicarla al carril Backend │
+│ Productos enviados uno a uno      │ Indicar que se envían todos juntos   │
+│ Falta validación de cliente_id    │ Agregar paso en Backend              │
+│ Falta campo registrado_por        │ Mencionarlo en la solicitud          │
+│ Falta transacción atómica         │ Expandir "Generar pedido"            │
+│ Stock solo baja                   │ Mostrar stock_disponible/reservado   │
+│ Falta estado inicial del pedido   │ Agregar en paso "Registrar pedido"   │
+└──────────────────────────────────────────────────────────────────────────┘
+
+
+=== ARCHIVOS DE REFERENCIA EN EL BACKEND ===
+
+- Modelos:      backend_orbyte/pedidos/models.py
+- Serializers:  backend_orbyte/pedidos/serializers.py  (validación y creación)
+- Vistas:       backend_orbyte/pedidos/views.py
+- URLs:         backend_orbyte/pedidos/urls.py
+- Permisos:     backend_orbyte/pedidos/permissions.py

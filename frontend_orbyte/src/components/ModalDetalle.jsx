@@ -92,6 +92,9 @@ export default function ModalDetalle({ pedido, onClose }) {
         <div className="modal-productos-list">
           {pedido.productos.map((p, i) => (
             <div key={i} className="modal-producto-row">
+              {p.producto_imagen && (
+                <img src={p.producto_imagen} alt={p.producto_nombre} className="modal-producto-img" />
+              )}
               <div className="modal-producto-info">
                 <span className="modal-producto-nombre">{p.producto_nombre}</span>
                 <span className="modal-producto-meta">

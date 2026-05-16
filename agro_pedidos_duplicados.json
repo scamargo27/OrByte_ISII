@@ -1,0 +1,80 @@
+{
+  "sistema": "Agro",
+  "version": "1.0",
+  "exportado_en": "2026-05-14T08:00:00Z",
+  "pedidos": [
+    {
+      "id_externo": "A-007",
+      "cliente": "Cooperativa Los Andes",
+      "vendedor": "Carlos Peña",
+      "estado": "Completado",
+      "total": 720000,
+      "fecha": "2026-05-09T08:50:00Z",
+      "productos": [
+        { "nombre": "UreaMax Granulada 50kg", "categoria": "Fertilizantes", "cantidad": 6, "precio_unitario": 78000 },
+        { "nombre": "AgroSeed Tomate Chonto HB", "categoria": "Semillas", "cantidad": 12, "precio_unitario": 22000 },
+        { "nombre": "GoterFlow Cinta 100m", "categoria": "Riego", "cantidad": 2, "precio_unitario": 65000 }
+      ]
+    },
+    {
+      "id_externo": "A-009",
+      "cliente": "Granja Integral El Refugio",
+      "vendedor": "Juliana Moreno",
+      "estado": "Completado",
+      "total": 490000,
+      "fecha": "2026-05-13T09:00:00Z",
+      "productos": [
+        { "nombre": "Concentramax Bovino 18%", "categoria": "Nutrición Animal", "cantidad": 10, "precio_unitario": 35000 },
+        { "nombre": "SalMineral Ganado 10kg", "categoria": "Nutrición Animal", "cantidad": 4, "precio_unitario": 30000 }
+      ]
+    },
+    {
+      "id_externo": "A-009",
+      "cliente": "Granja Integral El Refugio",
+      "vendedor": "Juliana Moreno",
+      "estado": "Completado",
+      "total": 490000,
+      "fecha": "2026-05-13T09:00:00Z",
+      "productos": [
+        { "nombre": "Concentramax Bovino 18%", "categoria": "Nutrición Animal", "cantidad": 10, "precio_unitario": 35000 },
+        { "nombre": "SalMineral Ganado 10kg", "categoria": "Nutrición Animal", "cantidad": 4, "precio_unitario": 30000 }
+      ]
+    },
+    {
+      "id_externo": "A-010",
+      "cliente": "Hacienda Santa Rosa",
+      "vendedor": "Ricardo Salinas",
+      "estado": "Registrado",
+      "total": 312000,
+      "fecha": "2026-05-14T07:30:00Z",
+      "productos": [
+        { "nombre": "VacuBov Aftosa Dosis x50", "categoria": "Veterinaria", "cantidad": 3, "precio_unitario": 64000 },
+        { "nombre": "DesparaMax Ivermectina 500ml", "categoria": "Veterinaria", "cantidad": 3, "precio_unitario": 40000 }
+      ]
+    },
+    {
+      "id_externo": "A-010",
+      "cliente": "Hacienda Santa Rosa",
+      "vendedor": "Ricardo Salinas",
+      "estado": "En preparación",
+      "total": 312000,
+      "fecha": "2026-05-14T07:30:00Z",
+      "productos": [
+        { "nombre": "VacuBov Aftosa Dosis x50", "categoria": "Veterinaria", "cantidad": 3, "precio_unitario": 64000 },
+        { "nombre": "DesparaMax Ivermectina 500ml", "categoria": "Veterinaria", "cantidad": 3, "precio_unitario": 40000 }
+      ]
+    },
+    {
+      "id_externo": "A-011",
+      "cliente": "Agrícola del Norte S.A.S",
+      "vendedor": "Carlos Peña",
+      "estado": "Enviado",
+      "total": 675000,
+      "fecha": "2026-05-14T10:15:00Z",
+      "productos": [
+        { "nombre": "NutriCrop NPK Arrancador", "categoria": "Fertilizantes", "cantidad": 5, "precio_unitario": 120000 },
+        { "nombre": "AgroSeed Arroz Fedearroz 60", "categoria": "Semillas", "cantidad": 15, "precio_unitario": 15000 }
+      ]
+    }
+  ]
+}

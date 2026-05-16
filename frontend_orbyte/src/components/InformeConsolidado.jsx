@@ -1,8 +1,7 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { getInformeConsolidado } from '../api/pedidos'
 import './InformeConsolidado.css'
 
-const CAT_COLORS = ['cat-purple', 'cat-blue', 'cat-pink', 'cat-green', 'cat-orange']
 const POR_PAGINA = 5
 
 function formatPrecio(val) {
@@ -52,14 +51,6 @@ export default function InformeConsolidado() {
       .finally(() => setLoading(false))
   }, [])
 
-  const catColorMap = useMemo(() => {
-    if (!datos) return {}
-    const map = {}
-    datos.categorias.forEach((c, i) => {
-      map[c.categoria] = CAT_COLORS[i % CAT_COLORS.length]
-    })
-    return map
-  }, [datos])
 
   if (loading) return <div className="ic-root"><p className="ic-estado">Cargando informe...</p></div>
   if (error)   return <div className="ic-root"><p className="ic-estado ic-error">{error}</p></div>
@@ -174,7 +165,7 @@ export default function InformeConsolidado() {
             <thead>
               <tr>
                 <th>Producto</th>
-                <th>Categoría</th>
+                <th className="ic-th-center">Categoría</th>
                 <th className="ic-th-center">Unidades vendidas</th>
                 <th className="ic-th-center">Pedidos</th>
                 <th className="ic-th-num">Precio unitario</th>
@@ -185,10 +176,8 @@ export default function InformeConsolidado() {
               {productosPagina.map((p, i) => (
                 <tr key={i}>
                   <td className="ic-td-nombre">{p.nombre}</td>
-                  <td>
-                    <span className={`ic-cat-badge ${catColorMap[p.categoria] || 'cat-purple'}`}>
-                      {p.categoria}
-                    </span>
+                  <td className="ic-td-center">
+                    <span className="ic-cat-badge">{p.categoria}</span>
                   </td>
                   <td className="ic-td-center">{p.unidades_vendidas}</td>
                   <td className="ic-td-center">{p.pedidos}</td>

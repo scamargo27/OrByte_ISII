@@ -352,7 +352,7 @@ class ListarProductosView(APIView):
             .select_related('categoria', 'marca')
             .order_by('nombre')
             .values('id', 'nombre', 'precio_unitario', 'stock_disponible',
-                    'categoria__nombre', 'marca__nombre')
+                    'categoria__nombre', 'marca__nombre', 'imagen_url')
         )
         data = [
             {
@@ -362,6 +362,7 @@ class ListarProductosView(APIView):
                 'stock_disponible': p['stock_disponible'],
                 'categoria':        p['categoria__nombre'],
                 'marca':            p['marca__nombre'],
+                'imagen_url':       p['imagen_url'],
             }
             for p in qs
         ]

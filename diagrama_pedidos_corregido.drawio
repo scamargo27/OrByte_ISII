@@ -1,0 +1,235 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" scale="1" border="0">
+  <diagram name="Page-1" id="VYbr7RxJ_pNsntH4f3Ba">
+    <mxGraphModel dx="2289" dy="1384" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" parent="1" style="text;html=1;fontSize=16;fontStyle=1;align=center;fillColor=#f5f5f5;strokeColor=#000000;fontColor=#333333;strokeWidth=2;" value="DIAGRAMA DE ACTIVIDADES - REGISTRO DE PEDIDOS - ORBYTE" vertex="1">
+          <mxGeometry height="40" width="1610" x="40" y="20" as="geometry" />
+        </mxCell>
+
+        <!-- ===== FRONTEND SWIMLANE ===== -->
+        <mxCell id="3" parent="1" style="swimlane;html=1;startSize=40;fillColor=#e1d5e7;strokeColor=#000000;strokeWidth=2;fontSize=12;fontStyle=1;swimlaneFillColor=#E6D0DE;" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;FRONTEND&lt;/font&gt;" vertex="1">
+          <mxGeometry height="1440" width="430" x="420" y="60" as="geometry">
+            <mxRectangle height="40" width="140" x="1350" y="70" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4" edge="1" parent="3" source="5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5" parent="3" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=none;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="170" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="6" parent="3" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Mostrar página principal&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="180" x="100" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="7" parent="3" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Generar solicitud de inventario&amp;nbsp;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="180" x="100" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="8" parent="3" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Mostrar el formulario de registro con los datos obtenidos&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="185" x="97.5" y="300" as="geometry" />
+        </mxCell>
+
+        <!-- MODIFICADO: antes "Consultar disponibilidad del producto" (solo frontend).
+             Ahora el frontend envía la solicitud al backend para que este valide el stock. -->
+        <mxCell id="10" parent="3" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Enviar solicitud de disponibilidad al backend&lt;/font&gt;" vertex="1">
+          <mxGeometry height="90" width="180" x="100" y="395" as="geometry" />
+        </mxCell>
+
+        <!-- ELIMINADO el edge id=9 (era 10→13 directo en Frontend, sin pasar por Backend) -->
+
+        <mxCell id="11" edge="1" parent="3" source="13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" target="17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="12" edge="1" parent="3" source="13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" target="15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="13" parent="3" style="rhombus;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;¿Hay stock suficiente disponible?&lt;/font&gt;" vertex="1">
+          <mxGeometry height="140" width="220" x="80" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="14" edge="1" parent="3" source="15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="15" parent="3" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Mostrar aviso: &quot;Producto añadido con éxito&quot;&amp;nbsp;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="160" x="25" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="16" edge="1" parent="3" source="17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="17" parent="3" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Mostrar aviso: &quot;Stock insuficiente&quot;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="170" x="250" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="18" parent="3" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 24px;&quot;&gt;Sí&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="25" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="19" edge="1" parent="3" source="20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="20" parent="3" style="rhombus;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;¿Desea agregar otro producto?&lt;/font&gt;" vertex="1">
+          <mxGeometry height="140" width="200" x="5" y="935" as="geometry" />
+        </mxCell>
+
+        <!-- MODIFICADO: se aclara que la solicitud incluye TODOS los productos acumulados -->
+        <mxCell id="21" parent="3" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Enviar solicitud de registro de pedido (todos los productos)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="175" x="247.5" y="958" as="geometry" />
+        </mxCell>
+        <mxCell id="22" parent="3" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Ofrecer cambiar producto o cantidad&lt;/font&gt;" vertex="1">
+          <mxGeometry height="90" width="160" x="255" y="800" as="geometry" />
+        </mxCell>
+        <mxCell id="23" edge="1" parent="3" source="24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="24" parent="3" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Mostrar confirmación: &quot;Pedido registrado con éxito&quot;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="90" width="200" x="90" y="1210" as="geometry" />
+        </mxCell>
+        <mxCell id="25" parent="3" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="170" y="1360" as="geometry" />
+        </mxCell>
+        <mxCell id="26" parent="3" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;span style=&quot;font-size: 24px;&quot;&gt;NO&lt;/span&gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="300" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="27" parent="3" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;span style=&quot;font-size: 24px;&quot;&gt;NO&lt;/span&gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="185" y="1020" as="geometry" />
+        </mxCell>
+
+        <!-- ===== TRABAJADOR / ADMIN SWIMLANE ===== -->
+        <mxCell id="28" parent="1" style="swimlane;html=1;startSize=40;fillColor=#fff2cc;strokeColor=#000000;strokeWidth=2;fontSize=12;fontStyle=1;swimlaneFillColor=#FFF2CC;" value="&lt;span style=&quot;font-size: 16px;&quot;&gt;TRABAJADOR / ADMIN&lt;/span&gt;" vertex="1">
+          <mxGeometry height="1440" width="380" x="40" y="60" as="geometry">
+            <mxRectangle height="40" width="140" x="1350" y="70" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="30" parent="28" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Seleccionar el botón &quot;Nuevo Pedido&quot;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="190" x="100" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="31" parent="28" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Seleccionar producto&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="180" x="100" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="32" parent="28" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 24px;&quot;&gt;Sí&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="300" y="970" as="geometry" />
+        </mxCell>
+
+        <!-- ===== BACKEND SWIMLANE ===== -->
+        <mxCell id="33" parent="1" style="swimlane;html=1;startSize=40;fillColor=#d5e8d4;strokeColor=#000000;strokeWidth=2;fontSize=12;fontStyle=1;swimlaneFillColor=#D5E8D4;" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;BACKEND&lt;/font&gt;" vertex="1">
+          <mxGeometry height="1440" width="380" x="850" y="60" as="geometry">
+            <mxRectangle height="40" width="140" x="1350" y="70" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="34" parent="33" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Consultar el inventario&amp;nbsp;&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;(productos y stock)&lt;/font&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="90" width="180" x="90" y="195" as="geometry" />
+        </mxCell>
+        <mxCell id="35" parent="33" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Devolver los datos de inventario&amp;nbsp;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="180" x="90" y="300" as="geometry" />
+        </mxCell>
+
+        <!-- NUEVO: Verificar stock disponible (validación real en backend) -->
+        <mxCell id="60" parent="33" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Verificar stock disponible del producto&lt;/font&gt;" vertex="1">
+          <mxGeometry height="90" width="180" x="90" y="430" as="geometry" />
+        </mxCell>
+
+        <!-- NUEVO: Validar cliente_id y registrado_por antes de generar el pedido -->
+        <mxCell id="61" parent="33" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Validar cliente_id y registrado_por&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="190" x="90" y="880" as="geometry" />
+        </mxCell>
+
+        <!-- Edge interno Backend: 61 → 36 -->
+        <mxCell id="72" edge="1" parent="33" source="61" target="36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- MODIFICADO: se explicita la transacción atómica y la verificación de stock con select_for_update -->
+        <mxCell id="36" parent="33" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Generar pedido&lt;br&gt;(@transaction.atomic:&lt;br&gt;verificar stock con&lt;br&gt;select_for_update + crear pedido)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="110" width="190" x="90" y="980" as="geometry" />
+        </mxCell>
+        <mxCell id="37" parent="33" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Devolver confirmación&lt;br&gt;de pedido registrado&lt;/font&gt;" vertex="1">
+          <mxGeometry height="90" width="190" x="90" y="1210" as="geometry" />
+        </mxCell>
+
+        <!-- ===== BASE DE DATOS SWIMLANE ===== -->
+        <mxCell id="38" parent="1" style="swimlane;html=1;startSize=40;fillColor=#dae8fc;strokeColor=#000000;strokeWidth=2;fontSize=12;fontStyle=1;swimlaneFillColor=#D4E1F5;" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;BASE DE DATOS&lt;/font&gt;" vertex="1">
+          <mxGeometry height="1440" width="380" x="1230" y="60" as="geometry">
+            <mxRectangle height="40" width="140" x="1350" y="70" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="39" parent="38" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Buscar el inventario disponible para retornarlo&amp;nbsp;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="200" x="90" y="200" as="geometry" />
+        </mxCell>
+
+        <!-- MODIFICADO: se incluye la actualización de stock y el estado inicial del pedido -->
+        <mxCell id="40" parent="38" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Registrar pedido&lt;br&gt;Actualizar stock:&lt;br&gt;stock_disponible ↓&lt;br&gt;stock_reservado ↑&lt;br&gt;Estado inicial: Registrado&lt;/font&gt;" vertex="1">
+          <mxGeometry height="120" width="200" x="90" y="982" as="geometry" />
+        </mxCell>
+
+        <!-- ===== EDGES ENTRE CARRILES ===== -->
+
+        <!-- Mostrar página → Seleccionar botón Nuevo Pedido -->
+        <mxCell id="41" edge="1" parent="1" source="6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- Seleccionar botón → Generar solicitud inventario -->
+        <mxCell id="42" edge="1" parent="1" source="30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- Generar solicitud inventario → Backend: Consultar inventario -->
+        <mxCell id="43" edge="1" parent="1" source="7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="34">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- Backend: Consultar inventario → BD: Buscar inventario -->
+        <mxCell id="44" edge="1" parent="1" source="34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="39">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- BD: Buscar inventario → Backend: Devolver datos -->
+        <mxCell id="45" edge="1" parent="1" source="39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="35">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- Backend: Devolver datos → Frontend: Mostrar formulario -->
+        <mxCell id="46" edge="1" parent="1" source="35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- Frontend: Mostrar formulario → Trabajador: Seleccionar producto -->
+        <mxCell id="47" edge="1" parent="1" source="8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="31">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- Trabajador: Seleccionar producto → Frontend: Enviar solicitud de disponibilidad -->
+        <mxCell id="48" edge="1" parent="1" source="31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- NUEVO: Frontend: Enviar solicitud de disponibilidad → Backend: Verificar stock -->
+        <mxCell id="70" edge="1" parent="1" source="10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="60">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- NUEVO: Backend: Verificar stock → Frontend: ¿Hay stock suficiente? (devuelve resultado) -->
+        <mxCell id="71" edge="1" parent="1" source="60" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ¿Desea agregar otro producto? (SÍ) → Trabajador: Seleccionar producto -->
+        <mxCell id="49" edge="1" parent="1" source="20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="31">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- MODIFICADO: Frontend: Enviar solicitud → Backend: Validar cliente_id (antes iba directo a Generar pedido) -->
+        <mxCell id="50" edge="1" parent="1" source="21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="61">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Backend: Generar pedido → BD: Registrar pedido -->
+        <mxCell id="51" edge="1" parent="1" source="36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- Frontend: Ofrecer cambiar → Trabajador: Seleccionar producto -->
+        <mxCell id="52" edge="1" parent="1" source="22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" target="31">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- BD: Registrar pedido → Backend: Devolver confirmación -->
+        <mxCell id="53" edge="1" parent="1" source="40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="37">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- Backend: Devolver confirmación → Frontend: Mostrar confirmación -->
+        <mxCell id="54" edge="1" parent="1" source="37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="24">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
